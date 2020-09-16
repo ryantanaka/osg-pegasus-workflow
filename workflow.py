@@ -6,10 +6,17 @@ from Pegasus.api import *
 
 log.basicConfig(level=log.DEBUG)
 
+# --- Properties ---------------------------------------------------------------
+props = Properties()
+props["pegasus.data.configuration"] = "nonsharedfs"
+props["pegasus.monitord.encoding"] = "json"
+props["pegasus.catalog.workflow.amqp.url"] = "amqp://friend:donatedata@msgs.pegasus.isi.edu:5672/prod/workflows"
+props.write()
+
 # --- Site Catalog -------------------------------------------------------------
 staging = Site("staging", arch=Arch.X86_64, os_type=OS.LINUX)\
             .add_directories(
-                Directory(type=Directory.SHARED_SCRATCH, path="/rynge@osgconnect/ryantanaka")
+                Directory(directory_type=Directory.SHARED_SCRATCH, path="/rynge@osgconnect/ryantanaka")
                     .add_file_servers(
                         FileServer(
                             url="s3://rynge@osgconnect/ryantanaka", 
@@ -20,9 +27,9 @@ staging = Site("staging", arch=Arch.X86_64, os_type=OS.LINUX)\
 
 # did not add condor.+WantsStashCache=True because not using stashcp
 condorpool = Site("condorpool", arch=Arch.X86_64, os_type=OS.LINUX)\
+                .add_profiles(Namespace.PEGASUS, style="condor")\
                 .add_profiles(
                     Namespace.CONDOR,
-                    style="condor", 
                     universe="vanilla",
                     request_cpus="1",
                     request_memory="1 GB",
@@ -68,7 +75,7 @@ wf = Workflow("osg-workflow")\
 try:
     wf.plan(
         submit=True,
-        sites=["condorpool"],
+        sites=[condorpool.name],
         staging_sites={condorpool.name : staging.name}
     )\
     .wait()\
