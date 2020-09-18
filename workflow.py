@@ -23,6 +23,14 @@ staging = Site("staging", arch=Arch.X86_64, os_type=OS.LINUX)\
                             operation_type=Operation.ALL
                         )
                     ),
+                
+                Directory(directory_type=Directory.LOCAL_STORAGE, path="/rynge@osgconnect/ryantanaka/outputs")
+                    .add_file_servers(
+                        FileServer(
+                            url="s3://rynge@osgconnect/ryantanaka/outputs",
+                            operation_type=Operation.ALL
+                        )
+                    )
             )
 
 # did not add condor.+WantsStashCache=True because not using stashcp
@@ -72,7 +80,8 @@ try:
     wf.plan(
         submit=True,
         sites=[condorpool.name],
-        staging_sites={condorpool.name : staging.name}
+        staging_sites={condorpool.name : staging.name},
+        output_sites=["local", staging.name]
     )\
     .wait()\
     .analyze()\
