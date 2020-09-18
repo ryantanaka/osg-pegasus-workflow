@@ -16,10 +16,18 @@ props.write()
 # --- Site Catalog -------------------------------------------------------------
 staging = Site("staging", arch=Arch.X86_64, os_type=OS.LINUX)\
             .add_directories(
-                Directory(directory_type=Directory.SHARED_SCRATCH, path="/rynge@osgconnect/ryantanaka")
+                Directory(directory_type=Directory.SHARED_SCRATCH, path="/rynge@osgconnect/ryantanaka/scratch")
                     .add_file_servers(
                         FileServer(
                             url="s3://rynge@osgconnect/ryantanaka", 
+                            operation_type=Operation.ALL
+                        )
+                    ),
+                
+                Directory(directory_type=Directory.LOCAL_STORAGE, path="/rynge@osgconnect/ryantanaka/outputs")
+                    .add_file_servers(
+                        FileServer(
+                            url="s3://rynge@osgconnect/ryantanaka/outputs",
                             operation_type=Operation.ALL
                         )
                     )
