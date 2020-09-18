@@ -34,11 +34,7 @@ condorpool = Site("condorpool", arch=Arch.X86_64, os_type=OS.LINUX)\
                     request_cpus="1",
                     request_memory="1 GB",
                     request_disk="1 GB",
-                    requirements=(
-                        "OSGVO_OS_STRING == 'RHEL 7'"
-                        " && HAS_MODULES == True"
-                        " && GLIDEIN_Site =!= 'OSG_US_ASU_DELL_M420"
-                    )
+                    requirements='HAS_SINGULARITY == True'	
                 )
 
 SiteCatalog()\
