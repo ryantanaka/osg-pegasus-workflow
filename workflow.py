@@ -74,6 +74,11 @@ wf = Workflow("osg-workflow")\
             Job(hello_world)
                 .add_inputs(File("input_file.txt"))
                 .add_outputs(File("output_file.txt"))
+                .add_profiles(
+                    Namespace.CONDOR, 
+                    key="+SingularityImage", 
+                    value='"/cvmfs/singularity.opensciencegrid.org/opensciencegrid/tensorflow-gpu:2.3-cuda-10.1"'
+                )
         )
 
 try:
